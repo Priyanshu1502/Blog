@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp"
 import DashBoard from "./pages/Dashboard"
 import Project from "./pages/Projects"
 import Header from './components/Header'
+import Footer from './components/Footer'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/dashboard' element={<DashBoard />} />
         <Route path='/projects' element= {<Project />} />
       </Routes>
+    <Footer />
     </BrowserRouter>
   )
 }
