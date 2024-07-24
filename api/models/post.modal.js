@@ -20,7 +20,7 @@ const postSchema = new mongoose.Schema(
       default:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbxNypgyADKWdhU9c2zuLT_yO9mJYnQPO_1A&s",
     },
-    catagory: {
+    category: {
       type: String,
       default: "Uncategorized",
     },
