@@ -58,7 +58,7 @@ const DashSidebar = () => {
                 icon={HiDocumentText}
                 as="div"
               >
-                Profile
+                Posts
               </Sidebar.Item>
             </Link>
           )}
