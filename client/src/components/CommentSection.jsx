@@ -1,12 +1,16 @@
 import { Alert, Button, Textarea, TextInput } from "flowbite-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Comment from "./Comment";
 
 const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
+  const [allComment, setAllComment] = useState([]);
+  console.log(allComment);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (comment.length > 200) {
@@ -28,11 +32,27 @@ const CommentSection = ({ postId }) => {
       if (res.ok) {
         setComment("");
         setCommentError(null);
+        setAllComment([data, ...allComment]);
       }
     } catch (error) {
       setCommentError(error.message);
     }
   };
+
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const res = await fetch(`/api/comment/getPostComments/${postId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setAllComment(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getComments();
+  }, [postId]);
 
   return (
     <div className=" max-w-2xl mx-auto w-full p-3">
@@ -85,6 +105,21 @@ const CommentSection = ({ postId }) => {
             </Alert>
           )}
         </form>
+      )}
+      {allComment.length === 0 ? (
+        <p className="text-sm my-5">No comments yet!</p>
+      ) : (
+        <React.Fragment>
+          <div className="text-sm my-5 flex items-center gap-1">
+            <p>Comments</p>
+            <div className="border border-gray-400 py-1 px-2 rounded-sm">
+              <p>{allComment.length}</p>
+            </div>
+          </div>
+          {allComment.map((comment) => (
+            <Comment key={comment._id} comment={comment} />
+          ))}
+        </React.Fragment>
       )}
     </div>
   );
