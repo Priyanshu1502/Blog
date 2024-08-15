@@ -1,4 +1,5 @@
 import Comment from "../models/comment.modal.js";
+import { errorHandeler } from "../utils/error.js";
 
 export const createComment = async (req, res, next) => {
   try {
@@ -94,6 +95,33 @@ export const deleteComment = async (req, res, next) => {
     }
     await Comment.findByIdAndDelete(req.params.commentId);
     res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getComment = async (req, res, next) => {
+  if (!req.user.isAdmin)
+    return next(errorHandeler(403, "You are not allowed to get all comments"));
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.sort === "desc" ? -1 : 1;
+    const comment = await Comment.find()
+      .sort({ createdAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+    const totalComment = await Comment.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthComment = await Comment.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+    res.status(200).json({ comment, totalComment, lastMonthComment });
   } catch (error) {
     next(error);
   }
