@@ -39,10 +39,10 @@ export const getposts = async (req, res, next) => {
       ...(req.query.searchTerm && {
         $or: [
           {
-            title: { $regex: req.query.searchTerm, $option: "i" },
+            title: { $regex: req.query.searchTerm },
           },
           {
-            content: { $regex: req.query.searchTerm, $option: "i" },
+            content: { $regex: req.query.searchTerm },
           },
         ],
       }),
